@@ -153,8 +153,6 @@ int main() {
 	int n = ((s.upper_right.loc[X] - s.lower_left.loc[X]) / s.ivl[X]) + 1;
 	int e = ((s.upper_right.loc[Y] - s.lower_left.loc[Y]) / s.ivl[Y]) + 1;
 
-	printf("%d, %d\n", n, e);
-
 	struct observation **grid = (struct observation**)(malloc(n * sizeof(struct observation*)));
 	for (int i = 0; i < n; i++) {
 		grid[i] = (struct observation*)(malloc(e * sizeof(struct observation)));
@@ -199,7 +197,7 @@ int main() {
 	}
 
 	// Matrix Form
-	for (int i = 0; i < n; i++) {
+	for (int i = n-1; i >= 0; i--) {
 		for (int j = 0; j < e; j++) {
 			fprintf(txx, "%lf", grid[i][j].tensor_matrix[X][X]);
 			fprintf(txx, ((j+1 == e) ? "\n" : ","));
@@ -231,6 +229,7 @@ int main() {
 	tzz = fopen("T_zz_p.csv", "w");
 
 	// Point Form
+
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < e; j++) {
 			fprintf(txx, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
