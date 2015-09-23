@@ -38,6 +38,7 @@ double dist(double a, double b, double c) {
 
 double tensor(unsigned int d1, unsigned int d2, struct point a, struct prism p) {
 	unsigned int index = 0;
+	double swap = 1.0;
 	double d[3][2];
 	double num[2][2][2];
 	double den[2][2][2];
@@ -64,14 +65,22 @@ double tensor(unsigned int d1, unsigned int d2, struct point a, struct prism p) 
 					
 					val[i][j][k] = atan2(num[i][j][k], den[i][j][k]); 	
 				} else {
-					index = (~((1 << d1) + (1 << d2))) & (7);
+					// index = (~((1 << d1) + (1 << d2))) & (7);
 					num[i][j][k] = dist(d[X][i], d[Y][j], d[Z][k]);
 
-					(X == index) ? (num[i][j][k] += d[X][i]) : 1;
-					(Y == index) ? (num[i][j][k] += d[Y][j]) : 1;
-					(Z == index) ? (num[i][j][k] += d[Z][k]) : 1;
+					if ((d1==X && d2==Y) || (d1==X && d2==Y)) num[i][j][k] += d[Z][k];
+					if ((d1==X && d2==Z) || (d1==Z && d2==X)) num[i][j][k] += d[Y][j];
+					if ((d1==Y && d2==Z) || (d1==Z && d2==Y)) num[i][j][k] += d[X][i];
+					// (X == index) ? (num[i][j][k] += d[X][i]) : 1;
+					// (Y == index) ? (num[i][j][k] += d[Y][j]) : 1;
+					// (Z == index) ? (num[i][j][k] += d[Z][k]) : 1;
 
-					val[i][j][k] = log(num[i][j][k]);				
+					// Only use terms that are nonzero
+					if (num[i][j][k] != 0.0) val[i][j][k] = log(num[i][j][k]);
+					else {
+						val[i][j][k] = 0.0;
+						swap = (-1.0);
+					}
 				}
 				val[i][j][k] *= (((i + j + k) % 2) ? (-1.0) : (1.0));
 				value += val[i][j][k];
@@ -79,7 +88,7 @@ double tensor(unsigned int d1, unsigned int d2, struct point a, struct prism p) 
 		}
 	}
 
-	return value;
+	return value*swap;
 }
 
 int main() {
@@ -160,7 +169,7 @@ int main() {
 
 	double north = 0.0;
 	double east = 0.0;
-	double big_g = 0.667384;
+	double big_g = 0.000667384;
 	double rho = density * 1000.0; // From gram/cc to kg/m^3
 	struct point pnt;
 
@@ -177,7 +186,7 @@ int main() {
 			grid[i][j].tensor_matrix[X][Z] = tensor(X, Z, pnt, p) * rho * big_g;
 			grid[i][j].tensor_matrix[Y][X] = (-1.0) * grid[i][j].tensor_matrix[X][Y];
 			grid[i][j].tensor_matrix[Y][Y] = tensor(Y, Y, pnt, p) * rho * big_g;
-			grid[i][j].tensor_matrix[Y][Z] = tensor(Y, Z, pnt, p) * rho * big_g;
+			grid[i][j].tensor_matrix[Y][Z] = (-1.0)*tensor(Y, Z, pnt, p) * rho * big_g;
 			grid[i][j].tensor_matrix[Z][X] = (-1.0) * grid[i][j].tensor_matrix[X][Z];
 			grid[i][j].tensor_matrix[Z][Y] = (-1.0) * grid[i][j].tensor_matrix[Y][Z];
 			grid[i][j].tensor_matrix[Z][Z] = tensor(Z, Z, pnt, p) * rho * big_g;
@@ -250,7 +259,18 @@ int main() {
 			fprintf(tzz, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
 			fprintf(tzz, "%lf\n", grid[i][j].tensor_matrix[Z][Z]);
 		}
-	}	
+	}
+
+	FILE* x_obs = fopen("x_obs.csv", "w");
+	FILE* y_obs = fopen("y_obs.csv", "w");
+	for (int i = 0; i < n; i++) {
+		fprintf(y_obs, "%lf\n", grid[i][0].p.loc[X]);
+	}
+	for (int j = 0; j < e; j++) {
+		fprintf(x_obs, "%lf\n", grid[0][j].p.loc[Y]);
+	}
+	fclose(x_obs);
+	fclose(y_obs);
 
 	fclose(txx);
 	fclose(txy);
