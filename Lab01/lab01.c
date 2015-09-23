@@ -223,6 +223,43 @@ int main() {
 	fclose(tyz);
 	fclose(tzz);
 
+	txx = fopen("T_xx_p.csv", "w");
+	txy = fopen("T_xy_p.csv", "w");
+	txz = fopen("T_xz_p.csv", "w");
+	tyy = fopen("T_yy_p.csv", "w");
+	tyz = fopen("T_yz_p.csv", "w");
+	tzz = fopen("T_zz_p.csv", "w");
+
+	// Point Form
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < e; j++) {
+			fprintf(txx, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(txx, "%lf\n", grid[i][j].tensor_matrix[X][X]);
+
+			fprintf(txy, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(txy, "%lf\n", grid[i][j].tensor_matrix[X][Y]);
+
+			fprintf(txz, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(txz, "%lf\n", grid[i][j].tensor_matrix[X][Z]);
+
+			fprintf(tyy, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(tyy, "%lf\n", grid[i][j].tensor_matrix[Y][Y]);
+
+			fprintf(tyz, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(tyz, "%lf\n", grid[i][j].tensor_matrix[Y][Z]);
+
+			fprintf(tzz, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(tzz, "%lf\n", grid[i][j].tensor_matrix[Z][Z]);
+		}
+	}	
+
+	fclose(txx);
+	fclose(txy);
+	fclose(txz);
+	fclose(tyy);
+	fclose(tyz);
+	fclose(tzz);
+
 	for (int i = 0; i < n; i++) {
 		free(grid[i]);
 	}
