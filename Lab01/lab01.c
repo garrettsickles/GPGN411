@@ -170,7 +170,7 @@ int main() {
 	double north = 0.0;
 	double east = 0.0;
 	double big_g = 0.000667384;
-	double rho = density * 1000.0; // From gram/cc to kg/m^3
+	double rho = density * 1000.0;
 	struct point pnt;
 
 	for (int i = 0; i < n; i++) {
