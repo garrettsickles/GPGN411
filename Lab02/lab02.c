@@ -262,9 +262,8 @@ int main() {
 	tt = fopen("Total_p.csv", "w");
 
 	// Point Form
-
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < e; j++) {
+	for (int i = n-1; i >= 0; i--) {
+		for (int j = e-1; j >= 0; j--) {
 			fprintf(bx, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
 			fprintf(bx, "%lf\n", grid[i][j].B_a[X]);
 
