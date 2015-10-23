@@ -30,3 +30,9 @@
 
 # Debug files
 *.dSYM/
+
+# Stuff I have run into
+*.c~
+*.txt~
+*.m~
+*.zip

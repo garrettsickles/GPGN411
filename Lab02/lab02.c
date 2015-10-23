@@ -1,4 +1,4 @@
-// To compile: gcc -std=c99 -o lab01 lab01.c -lm
+// To compile: gcc -std=c99 -o lab02 lab02.c -lm
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -274,6 +274,33 @@ int main() {
 			fprintf(bz, "%lf\n", grid[i][j].B_a[Z]);
 
 			fprintf(tt, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(tt, "%lf\n", grid[i][j].total);
+		}
+	}
+
+	bx = fopen("B_x_p.dat", "w");
+	by = fopen("B_y_p.dat", "w");
+	bz = fopen("B_z_p.dat", "w");
+	tt = fopen("Total_p.dat", "w");
+
+	fprintf(bx, "%d\t%d\n", e, n);
+	fprintf(by, "%d\t%d\n", e, n);
+	fprintf(bz, "%d\t%d\n", e, n);
+	fprintf(tt, "%d\t%d\n", e, n);
+
+	// Point Form
+	for (int j = 0; j < e; j++) {
+		for (int i = 0; i < n; i++) {
+			fprintf(bx, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(bx, "%lf\n", grid[i][j].B_a[X]);
+
+			fprintf(by, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(by, "%lf\n", grid[i][j].B_a[Y]);
+
+			fprintf(bz, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(bz, "%lf\n", grid[i][j].B_a[Z]);
+
+			fprintf(tt, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
 			fprintf(tt, "%lf\n", grid[i][j].total);
 		}
 	}

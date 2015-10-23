@@ -206,7 +206,7 @@ int main() {
 	}
 
 	// Matrix Form
-	for (int i = n-1; i >= 0; i--) {
+	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < e; j++) {
 			fprintf(txx, "%lf", grid[i][j].tensor_matrix[X][X]);
 			fprintf(txx, ((j+1 == e) ? "\n" : ","));
@@ -238,7 +238,6 @@ int main() {
 	tzz = fopen("T_zz_p.csv", "w");
 
 	// Point Form
-
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < e; j++) {
 			fprintf(txx, "%lf,%lf,", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
@@ -261,6 +260,58 @@ int main() {
 		}
 	}
 
+	fclose(txx);
+	fclose(txy);
+	fclose(txz);
+	fclose(tyy);
+	fclose(tyz);
+	fclose(tzz);
+
+	txx = fopen("T_xx_p.dat", "w");
+	txy = fopen("T_xy_p.dat", "w");
+	txz = fopen("T_xz_p.dat", "w");
+	tyy = fopen("T_yy_p.dat", "w");
+	tyz = fopen("T_yz_p.dat", "w");
+	tzz = fopen("T_zz_p.dat", "w");
+
+	fprintf(txx, "%d\t%d\n", e, n);
+	fprintf(txy, "%d\t%d\n", e, n);
+	fprintf(txz, "%d\t%d\n", e, n);
+	fprintf(tyy, "%d\t%d\n", e, n);
+	fprintf(tyz, "%d\t%d\n", e, n);
+	fprintf(tzz, "%d\t%d\n", e, n);
+	
+	// Point Form
+	for (int j = 0; j < e; j++) {
+		for (int i = 0; i < n; i++) {
+			fprintf(txx, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(txx, "%lf\n", grid[i][j].tensor_matrix[X][X]);
+
+			fprintf(txy, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(txy, "%lf\n", grid[i][j].tensor_matrix[X][Y]);
+
+			fprintf(txz, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(txz, "%lf\n", grid[i][j].tensor_matrix[X][Z]);
+
+			fprintf(tyy, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(tyy, "%lf\n", grid[i][j].tensor_matrix[Y][Y]);
+
+			fprintf(tyz, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(tyz, "%lf\n", grid[i][j].tensor_matrix[Y][Z]);
+
+			fprintf(tzz, "%lf\t%lf\t", grid[i][j].p.loc[Y], grid[i][j].p.loc[X]);
+			fprintf(tzz, "%lf\n", grid[i][j].tensor_matrix[Z][Z]);
+		}
+	}
+
+	fclose(txx);
+	fclose(txy);
+	fclose(txz);
+	fclose(tyy);
+	fclose(tyz);
+	fclose(tzz);
+
+
 	FILE* x_obs = fopen("x_obs.csv", "w");
 	FILE* y_obs = fopen("y_obs.csv", "w");
 	for (int i = 0; i < n; i++) {
@@ -271,13 +322,6 @@ int main() {
 	}
 	fclose(x_obs);
 	fclose(y_obs);
-
-	fclose(txx);
-	fclose(txy);
-	fclose(txz);
-	fclose(tyy);
-	fclose(tyz);
-	fclose(tzz);
 
 	for (int i = 0; i < n; i++) {
 		free(grid[i]);
