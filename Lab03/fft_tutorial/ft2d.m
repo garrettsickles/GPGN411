@@ -118,13 +118,14 @@ tminr=min(min(real_part));
 tmini=min(min(real_part));
 tmin=min(tminr,tmini);
 
-figure(1);
+figure('position', [0, 0, 600, 450]);
 subplot(2,2,1),
 pcolor(y, x, z);
 xlabel('x (m)');
 ylabel('y (m)');
 title('Data');
 colorbar;
+colormap jet;
 shading interp;
 axis tight;
 
@@ -137,6 +138,7 @@ amax=2*log10(tmax);
 amin=amax-10.0;
 caxis([amin amax]);
 colorbar;
+colormap jet;
 shading interp;
 axis tight;
 
@@ -147,6 +149,7 @@ ylabel('\omega_y');
 title('FFT: Real Part');
 shading interp;
 axis tight;
+colormap jet;
 caxis([tmin, tmax]);
 colorbar;
 
@@ -157,6 +160,7 @@ ylabel('\omega_y');
 title('FFT: Imaginary Part');
 shading interp;
 axis tight;
+colormap jet;colormap jet;
 caxis([tmin, tmax]);
 colorbar;
 
