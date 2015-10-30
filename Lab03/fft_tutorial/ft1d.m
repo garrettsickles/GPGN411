@@ -78,7 +78,7 @@ phase=angle(zft);
 %================================
 % plot the data:
 %=================================
-figure(1);
+figure('position', [0, 0, 600, 450]);
 subplot(2,2,1),
 plot(x, y);
 axis tight;
