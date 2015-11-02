@@ -3,6 +3,9 @@ function Lab04()
     file = fopen(filename, 'rt');
     ny = fscanf(file,'%d',1);
     nx = fscanf(file,'%d',1);
+    x = zeros(nx);
+    y = zeros(nx);
+    z = zeros(nx);
     for j=1:ny,
         for i=1:nx,
             y(i,j) = fscanf(file,'%f',1);
@@ -41,8 +44,8 @@ function Lab04()
     R = RAPS(Kx,Ky,log10(amplitude.^2));
     subplot(2,2,3);
     scatter(R(:,1),R(:,2));
-    xlabel('\omega_x');
-    ylabel('\omega_y');
+    xlabel('\omega_r');
+    ylabel('Amplitude^2');
     title('FFT: Radial Spectrum (log_{10})');
     axis tight;
 end
@@ -54,15 +57,33 @@ function [result] = Fk(values)
     result = ((0:N-1) - ceil(N/2))*dF;
 end
 
-function [result] = RAPS(fx, fy, values)
+function [avg] = RAPS(fx, fy, values)
     nx = length(fx);
     ny = length(fy);
     result = zeros(nx*ny,2);
-    display(length(result));
-    for j=1:ny,
-        for i=1:nx,
+    avg = zeros(2, 1);
+    for j = 1:ny,
+        for i = 1:nx,
             result((j-1)*nx + i,1) = (fy(i,j)^2 + fx(i,j)^2)^(0.5);
             result((j-1)*nx + i,2) = values(i,j);
        end
+    end
+    result = sortrows(result,1);
+    nr = length(result);
+    i = 1;
+    unique = 1;
+    while i < nr
+        n = 1;
+        sum = result(i,2);
+        while result(i,1) == result(i+n,1)
+            sum = sum + result(i+n,2);
+            n = n + 1;
+        end
+        if n ~= 1
+            unique = unique + 1;
+        end
+        avg(unique, 1) = result(i,1);
+        avg(unique, 2) = sum/n;
+        i = i + n;
     end
 end
