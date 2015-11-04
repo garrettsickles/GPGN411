@@ -25,8 +25,8 @@ function Lab04()
     pcolor(y, x, z);
     xlabel('x (m)');
     ylabel('y (m)');
-    title('Data');
-    colorbar;
+    title('Data'); 
+    ylabel(colorbar, 'Amplitude')
     colormap jet;
     shading interp;
     axis tight;
@@ -35,18 +35,19 @@ function Lab04()
     pcolor(Ky, Kx, log10(amplitude.^2));
     xlabel('\omega_x');
     ylabel('\omega_y');
-    title('FFT: Power Spectrum (log_{10})');
-    colorbar;
+    title('FFT: Power Spectrum');
+    ylabel(colorbar, 'log_{10}(Amplitude^{2})')
     colormap jet;
     shading interp;
     axis tight;
     
-    R = RAPS(Kx,Ky,log10(amplitude.^2));
-    subplot(2,2,3);
-    scatter(R(:,1),R(:,2));
+    R = RAPS(Kx,Ky,amplitude);
+    num2str(R(:,1), '%15.15f')
+    subplot(2,2,3:4);
+    scatter(R(:,1),log10(R(:,2).^2));
     xlabel('\omega_r');
-    ylabel('Amplitude^2');
-    title('FFT: Radial Spectrum (log_{10})');
+    ylabel('log_{10}(Amplitude^2)');
+    title('FFT: Radially Averaged Power Spectrum');
     axis tight;
 end
 
@@ -58,6 +59,8 @@ function [result] = Fk(values)
 end
 
 function [avg] = RAPS(fx, fy, values)
+
+    % Unwrap the 2D meshgrid into a list of pairs
     nx = length(fx);
     ny = length(fy);
     result = zeros(nx*ny,2);
@@ -68,22 +71,34 @@ function [avg] = RAPS(fx, fy, values)
             result((j-1)*nx + i,2) = values(i,j);
        end
     end
+    
+    % Sort the result 
     result = sortrows(result,1);
     nr = length(result);
-    i = 1;
+    
+    % Base Cases
+    first = 1;
+    last = 1;
+    sum = result(first,2);
     unique = 1;
-    while i < nr
-        n = 1;
-        sum = result(i,2);
-        while result(i,1) == result(i+n,1)
-            sum = sum + result(i+n,2);
-            n = n + 1;
-        end
-        if n ~= 1
+    
+    % N order data shrinking and averaging
+    while last < nr
+        last = last + 1;
+        % If next point has same radial frequency
+        if result(first, 1) == result(last, 1)
+            % Add it to the running sum
+            sum = sum + result(last, 2);
+        else
+            % Set the next unique frequency and amplitude
+            avg(unique, 1) = result(first, 1);
+            avg(unique, 2) = sum / (last - first);
+            
+            % Set first and last to the same
+            % Reset sum to the next value
+            first = last;
+            sum = result(last, 2);
             unique = unique + 1;
         end
-        avg(unique, 1) = result(i,1);
-        avg(unique, 2) = sum/n;
-        i = i + n;
     end
 end
