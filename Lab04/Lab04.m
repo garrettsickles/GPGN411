@@ -65,7 +65,7 @@ function Lab04()
         end
     end
     
-    num2str(R(:,1), '%15.15f')
+    % num2str(R(:,1), '%15.15f')
     subplot(3,2,3:6);
     scatter(R(:,1),log10(R(:,2).^2));
     hold on;
@@ -94,8 +94,8 @@ function [avg] = RAPS(fx, fy, values)
     ny = length(fy);
     result = zeros(nx*ny,2);
     avg = zeros(2, 1);
-    for j = 1:ny,
-        for i = 1:nx,
+    for j = 1:ny
+        for i = 1:nx
             result((j-1)*nx + i,1) = (fy(i,j)^2 + fx(i,j)^2)^(0.5);
             result((j-1)*nx + i,2) = values(i,j);
        end
