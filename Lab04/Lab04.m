@@ -20,8 +20,8 @@ function Lab04()
     Z = fftshift(fft2(z));
     amplitude = abs(Z);
     
-    figure('position', [0, 0, 600, 450]);
-    subplot(2,2,1);
+    figure('position', [0, 0, 600, 750]);
+    subplot(3,2,1);
     pcolor(y, x, z);
     xlabel('x (m)');
     ylabel('y (m)');
@@ -31,7 +31,7 @@ function Lab04()
     shading interp;
     axis tight;
 
-    subplot(2,2,2);
+    subplot(3,2,2);
     pcolor(Ky, Kx, log10(amplitude.^2));
     xlabel('\omega_x');
     ylabel('\omega_y');
@@ -42,15 +42,44 @@ function Lab04()
     axis tight;
     
     R = RAPS(Kx,Ky,amplitude);
+    p = polyfit(R(:,1),log10(R(:,2).^2), 15);
+    x = min(R(:,1)):0.001:max(R(:,1));
+    y = polyval(p, x);
+    
+    % Trapezoidal integration
+    spacing = 10;
+    py = 0;
+    px = 0;
+    index = 1;
+    first = 1;
+    for i = 1:(length(x)-1)
+        py = py + (0.5)*(x(i+1)-x(i))*(y(i)+y(i+1));
+        px = px + x(i);
+        if mod(i, spacing) == 0
+            ing(index, 1) = px / (spacing);
+            ing(index, 2) = py / (x(i+1) - x(first));
+            first = i + 1;
+            px = 0;
+            py = 0;
+            index = index + 1;
+        end
+    end
+    
     num2str(R(:,1), '%15.15f')
-    subplot(2,2,3:4);
+    subplot(3,2,3:6);
     scatter(R(:,1),log10(R(:,2).^2));
+    hold on;
+    plot(x, y, 'color', 'black');
+    hold on;
+    plot(ing(:,1), ing(:,2), 'color', 'red');
     xlabel('\omega_r');
     ylabel('log_{10}(Amplitude^2)');
     title('FFT: Radially Averaged Power Spectrum');
+    legend('Data','Interpolated','Integrated');
     axis tight;
 end
 
+% Produce a frequency spectrum
 function [result] = Fk(values)
     N = length(values);
     Ts = (values(N) - values(1)) / (N - 1);
