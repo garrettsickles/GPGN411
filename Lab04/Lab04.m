@@ -43,11 +43,11 @@ function Lab04()
     
     R = RAPS(Kx,Ky,amplitude);
     p = polyfit(R(:,1),log10(R(:,2).^2), 15);
-    x = min(R(:,1)):0.001:max(R(:,1));
+    x = min(R(:,1)):0.0001:max(R(:,1));
     y = polyval(p, x);
     
     % Trapezoidal integration
-    spacing = 10;
+    spacing = 200;
     py = 0;
     px = 0;
     index = 1;
@@ -67,7 +67,7 @@ function Lab04()
     
     % num2str(R(:,1), '%15.15f')
     subplot(3,2,3:6);
-    scatter(R(:,1),log10(R(:,2).^2));
+    scatter(R(:,1),log10(R(:,2).^2),'.');
     hold on;
     plot(x, y, 'color', 'black');
     hold on;
