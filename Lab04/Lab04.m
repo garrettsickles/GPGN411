@@ -45,6 +45,7 @@ function Lab04()
     p = polyfit(R(:,1),log10(R(:,2).^2), 15);
     x = min(R(:,1)):0.0001:max(R(:,1));
     y = polyval(p, x);
+    display(length(x));
     
     % Trapezoidal integration
     spacing = 200;
@@ -71,7 +72,8 @@ function Lab04()
     hold on;
     plot(x, y, 'color', 'black');
     hold on;
-    plot(ing(:,1), ing(:,2), 'color', 'red');
+    plot(ing(:,1), ing(:,2), 'color', 'red','marker','o','markerfacecolor','r');
+    
     xlabel('\omega_r');
     ylabel('log_{10}(Amplitude^2)');
     title('FFT: Radially Averaged Power Spectrum');
