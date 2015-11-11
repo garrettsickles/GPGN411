@@ -32,7 +32,7 @@ function Lab04()
     axis tight;
 
     subplot(3,2,2);
-    pcolor(Ky, Kx, log10(amplitude.^2));
+    pcolor(Ky, Kx, log(amplitude.^2));
     xlabel('\omega_x');
     ylabel('\omega_y');
     title('FFT: Power Spectrum');
@@ -41,41 +41,25 @@ function Lab04()
     shading interp;
     axis tight;
     
+    % Radially averaged power spectrum
     R = RAPS(Kx,Ky,amplitude);
-    p = polyfit(R(:,1),log10(R(:,2).^2), 15);
+    
+    % Linear interpolation
     x = min(R(:,1)):0.0001:max(R(:,1));
-    y = polyval(p, x);
-    display(length(x));
+    y = interp1(R(:,1), R(:,2), x);
     
     % Trapezoidal integration
-    spacing = 200;
-    py = 0;
-    px = 0;
-    index = 1;
-    first = 1;
-    for i = 1:(length(x)-1)
-        py = py + (0.5)*(x(i+1)-x(i))*(y(i)+y(i+1));
-        px = px + x(i);
-        if mod(i, spacing) == 0
-            ing(index, 1) = px / (spacing);
-            ing(index, 2) = py / (x(i+1) - x(first));
-            first = i + 1;
-            px = 0;
-            py = 0;
-            index = index + 1;
-        end
-    end
+    ing = TrapInt(x, y, 100);
     
-    % num2str(R(:,1), '%15.15f')
     subplot(3,2,3:6);
-    scatter(R(:,1),log10(R(:,2).^2),'.');
+    scatter(R(:,1),log(R(:,2).^2),'.');
     hold on;
-    plot(x, y, 'color', 'black');
+    plot(x, log(y.^2), 'color', [0.0,0.0,0.0]+0.7);
     hold on;
-    plot(ing(:,1), ing(:,2), 'color', 'red','marker','o','markerfacecolor','r');
+    plot(ing(:,1), log(ing(:,2).^2), 'color', 'red','marker','o','markerfacecolor','r');
     
     xlabel('\omega_r');
-    ylabel('log_{10}(Amplitude^2)');
+    ylabel('ln(Amplitude^2)');
     title('FFT: Radially Averaged Power Spectrum');
     legend('Data','Interpolated','Integrated');
     axis tight;
@@ -89,6 +73,7 @@ function [result] = Fk(values)
     result = ((0:N-1) - ceil(N/2))*dF;
 end
 
+% Radially Averaged Power Spectrum
 function [avg] = RAPS(fx, fy, values)
 
     % Unwrap the 2D meshgrid into a list of pairs
@@ -130,6 +115,27 @@ function [avg] = RAPS(fx, fy, values)
             first = last;
             sum = result(last, 2);
             unique = unique + 1;
+        end
+    end
+end
+
+% Trapezoidal integration
+function result = TrapInt(x, y, spacing)
+    py = 0;
+    px = 0;
+    index = 1;
+    first = 1;
+    result = zeros(floor(length(x)/spacing), 2);
+    for i = 1:(length(x)-1)
+        py = py + (0.5)*(x(i+1)-x(i))*(y(i)+y(i+1));
+        px = px + x(i);
+        if mod(i, spacing) == 0
+            result(index, 1) = px / (spacing);
+            result(index, 2) = py / (x(i+1) - x(first));
+            first = i + 1;
+            px = 0;
+            py = 0;
+            index = index + 1;
         end
     end
 end
