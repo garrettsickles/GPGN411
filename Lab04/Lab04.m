@@ -49,7 +49,7 @@ function Lab04()
     y = interp1(R(:,1), R(:,2), x);
     
     % Trapezoidal integration
-    ing = TrapInt(x, y, 100);
+    ing = TrapInt(x, y, 200);
     
     subplot(3,2,3:6);
     scatter(R(:,1),log(R(:,2).^2),'.');
@@ -60,7 +60,7 @@ function Lab04()
     
     xlabel('\omega_r');
     ylabel('ln(Amplitude^2)');
-    title('FFT: Radially Averaged Power Spectrum');
+    title(['Radially Averaged Power Spectrum for ', filename]);
     legend('Data','Interpolated','Integrated');
     axis tight;
 end
