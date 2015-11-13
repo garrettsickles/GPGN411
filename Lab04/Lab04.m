@@ -36,7 +36,7 @@ function Lab04()
     xlabel('\omega_x');
     ylabel('\omega_y');
     title('FFT: Power Spectrum');
-    ylabel(colorbar, 'log_{10}(Amplitude^{2})')
+    ylabel(colorbar, 'ln(Amplitude^{2})')
     colormap jet;
     shading interp;
     axis tight;
